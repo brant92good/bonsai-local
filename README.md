@@ -9,6 +9,7 @@ Run Ternary Bonsai 2 27B through an OpenAI-compatible local server with Q8 KV ca
 - **120K-token retrieval verified** across early, middle, and late records.
 - **23.0 GiB total VRAM** observed with the default profile.
 - Standard and abliterated MTP variants.
+- Verified 1-, 2-, 4-, and 8-request serving profiles.
 
 ## Quick start
 
@@ -29,6 +30,17 @@ bonsai-standard C:\path\to\your\project
 ~~~
 
 Setup.ps1 downloads and builds without loading the model. Stop-Bonsai.cmd releases VRAM. Preview-settings-no-GPU.cmd previews the server command.
+
+## Launch profiles
+
+| Standard | Abliterated | Slots | Context per slot |
+|---|---|---:|---:|
+| `bonsai-long` | `bonsai-abliterated-long` | 1 | 204,800 |
+| `bonsai-standard` | `bonsai-abliterated` | 2 | 131,072 |
+| `bonsai-agents-4` | `bonsai-abliterated-agents-4` | 4 | 32,768 |
+| `bonsai-agents-8` | `bonsai-abliterated-agents-8` | 8 | 16,384 |
+
+Pass a project directory as the optional first argument. The launcher verifies the loaded weights, slot count, and context size before opening OpenCode.
 
 ## Abliterated variant
 
@@ -74,4 +86,4 @@ Rates combine both requests. The sweep used fixed-order local runs; desktop acti
 
 OpenCode 1.18.31 passed live model discovery and tool use. Serving uses the Prism llama.cpp fork; stock vLLM does not support the model's PTQ1/PQ2 formats.
 
-[Model](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf) | [MTP weights](https://huggingface.co/ProCreations/Ternary-Bonsai-2-27B-MTP) | [Abliterated MTP](https://huggingface.co/BoldingBuilds/Ternary-Bonsai-2-27B-Abliterated-PQ2_0-MTP-GGUF) | [Runtime](https://github.com/PrismML-Eng/llama.cpp) | [Attribution](THIRD_PARTY.md)
+[Model](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf) | [MTP weights](https://huggingface.co/ProCreations/Ternary-Bonsai-2-27B-MTP) | [Abliterated MTP](https://huggingface.co/BoldingBuilds/Ternary-Bonsai-2-27B-Abliterated-PQ2_0-MTP-GGUF) | [Runtime](https://github.com/PrismML-Eng/llama.cpp) | [Attribution](THIRD_PARTY.md) | [MIT license](LICENSE)

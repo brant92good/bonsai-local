@@ -33,12 +33,36 @@ $config | Add-Member NoteProperty '$schema' 'https://opencode.ai/config.json' -F
 if (-not $config.provider) { $config | Add-Member NoteProperty provider ([pscustomobject]@{}) -Force }
 $models = [ordered]@{
     'bonsai2-27b' = [ordered]@{
-        name = 'Bonsai 2 27B - Standard MTP (draft 4)'
+        name = 'Bonsai 2 27B - Standard MTP (2x131K, draft 4)'
         limit = [ordered]@{ context = 131072; output = 8192 }
     }
     'bonsai2-27b-abliterated' = [ordered]@{
-        name = 'Bonsai 2 27B - Abliterated MTP (draft 2)'
+        name = 'Bonsai 2 27B - Abliterated MTP (2x131K, draft 2)'
         limit = [ordered]@{ context = 131072; output = 8192 }
+    }
+    'bonsai2-27b-200k' = [ordered]@{
+        name = 'Bonsai 2 27B - Standard MTP (1x200K, draft 4)'
+        limit = [ordered]@{ context = 204800; output = 8192 }
+    }
+    'bonsai2-27b-abliterated-200k' = [ordered]@{
+        name = 'Bonsai 2 27B - Abliterated MTP (1x200K, draft 2)'
+        limit = [ordered]@{ context = 204800; output = 8192 }
+    }
+    'bonsai2-27b-4x32k' = [ordered]@{
+        name = 'Bonsai 2 27B - Standard MTP (4x32K)'
+        limit = [ordered]@{ context = 32768; output = 8192 }
+    }
+    'bonsai2-27b-abliterated-4x32k' = [ordered]@{
+        name = 'Bonsai 2 27B - Abliterated MTP (4x32K)'
+        limit = [ordered]@{ context = 32768; output = 8192 }
+    }
+    'bonsai2-27b-8x16k' = [ordered]@{
+        name = 'Bonsai 2 27B - Standard MTP (8x16K)'
+        limit = [ordered]@{ context = 16384; output = 8192 }
+    }
+    'bonsai2-27b-abliterated-8x16k' = [ordered]@{
+        name = 'Bonsai 2 27B - Abliterated MTP (8x16K)'
+        limit = [ordered]@{ context = 16384; output = 8192 }
     }
 }
 $bonsai = [ordered]@{
@@ -59,21 +83,25 @@ if ($config.enabled_providers) {
 }
 $config | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $configPath -Encoding UTF8
 
-$standardCommand = @'
+function Write-BonsaiCommand {
+    param([string]$Name, [string]$Arguments)
+    $command = @"
 @echo off
 set "BONSAI_PROJECT=%~1"
 if "%BONSAI_PROJECT%"=="" set "BONSAI_PROJECT=%CD%"
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "__ROOT__\OpenCode-Bonsai.ps1" -ProjectPath "%BONSAI_PROJECT%"
-'@.Replace('__ROOT__', $PSScriptRoot)
-$abliteratedCommand = @'
-@echo off
-set "BONSAI_PROJECT=%~1"
-if "%BONSAI_PROJECT%"=="" set "BONSAI_PROJECT=%CD%"
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "__ROOT__\OpenCode-Bonsai.ps1" -Abliterated -ProjectPath "%BONSAI_PROJECT%"
-'@.Replace('__ROOT__', $PSScriptRoot)
-Set-Content -LiteralPath (Join-Path $InstallDir 'bonsai-standard.cmd') -Value $standardCommand -Encoding ASCII
-Set-Content -LiteralPath (Join-Path $InstallDir 'bonsai-abliterated.cmd') -Value $abliteratedCommand -Encoding ASCII
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$PSScriptRoot\OpenCode-Bonsai.ps1" $Arguments -ProjectPath "%BONSAI_PROJECT%"
+"@
+    Set-Content -LiteralPath (Join-Path $InstallDir $Name) -Value $command -Encoding ASCII
+}
+Write-BonsaiCommand 'bonsai-standard.cmd' ''
+Write-BonsaiCommand 'bonsai-abliterated.cmd' '-Abliterated'
+Write-BonsaiCommand 'bonsai-long.cmd' '-ServingProfile single-200k'
+Write-BonsaiCommand 'bonsai-abliterated-long.cmd' '-Abliterated -ServingProfile single-200k'
+Write-BonsaiCommand 'bonsai-agents-4.cmd' '-ServingProfile agents-4'
+Write-BonsaiCommand 'bonsai-abliterated-agents-4.cmd' '-Abliterated -ServingProfile agents-4'
+Write-BonsaiCommand 'bonsai-agents-8.cmd' '-ServingProfile agents-8'
+Write-BonsaiCommand 'bonsai-abliterated-agents-8.cmd' '-Abliterated -ServingProfile agents-8'
 
 Write-Host "OpenCode $(& $target --version) installed at $target"
 Write-Host "Config: $configPath"
-Write-Host 'Commands: bonsai-standard, bonsai-abliterated'
+Write-Host 'Commands: bonsai-standard, bonsai-abliterated, bonsai-long, bonsai-abliterated-long, bonsai-agents-4, bonsai-abliterated-agents-4, bonsai-agents-8, bonsai-abliterated-agents-8'

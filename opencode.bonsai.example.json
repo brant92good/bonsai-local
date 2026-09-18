@@ -7,16 +7,58 @@
       },
       "models": {
         "bonsai2-27b": {
-          "name": "Bonsai 2 27B - Standard MTP (draft 4)",
+          "name": "Bonsai 2 27B - Standard MTP (2x131K)",
           "limit": {
             "context": 131072,
             "output": 8192
           }
         },
         "bonsai2-27b-abliterated": {
-          "name": "Bonsai 2 27B - Abliterated MTP (draft 2)",
+          "name": "Bonsai 2 27B - Abliterated MTP (2x131K)",
           "limit": {
             "context": 131072,
+            "output": 8192
+          }
+        },
+        "bonsai2-27b-200k": {
+          "name": "Bonsai 2 27B - Standard MTP (1x200K)",
+          "limit": {
+            "context": 204800,
+            "output": 8192
+          }
+        },
+        "bonsai2-27b-abliterated-200k": {
+          "name": "Bonsai 2 27B - Abliterated MTP (1x200K)",
+          "limit": {
+            "context": 204800,
+            "output": 8192
+          }
+        },
+        "bonsai2-27b-4x32k": {
+          "name": "Bonsai 2 27B - Standard MTP (4x32K)",
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          }
+        },
+        "bonsai2-27b-8x16k": {
+          "name": "Bonsai 2 27B - Standard MTP (8x16K)",
+          "limit": {
+            "context": 16384,
+            "output": 8192
+          }
+        },
+        "bonsai2-27b-abliterated-4x32k": {
+          "name": "Bonsai 2 27B - Abliterated MTP (4x32K)",
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          }
+        },
+        "bonsai2-27b-abliterated-8x16k": {
+          "name": "Bonsai 2 27B - Abliterated MTP (8x16K)",
+          "limit": {
+            "context": 16384,
             "output": 8192
           }
         }

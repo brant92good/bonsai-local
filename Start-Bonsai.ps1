@@ -6,7 +6,7 @@ param(
     [switch]$DisableSpeculation,
     [ValidateRange(1,8)][int]$DraftTokens = 4,
     [ValidateSet('PTQ1_0','PQ2_0')][string]$Packing = 'PQ2_0',
-    [ValidateSet('baseline','balanced','long-context')][string]$Profile = 'balanced',
+    [ValidateSet('baseline','balanced','single-200k','agents-4','agents-8','long-context')][string]$Profile = 'balanced',
     [ValidateSet('f16','q8_0','q4_0')][string]$CacheTypeK = 'q8_0',
     [ValidateSet('f16','q8_0','q4_0')][string]$CacheTypeV = 'q8_0',
     [string]$KvMeanCenterFile,
@@ -29,6 +29,9 @@ if ($MicroBatchSize -gt $BatchSize) { throw 'MicroBatchSize must not exceed Batc
 $profiles = @{
     'baseline'      = @{Parallel=2; Context=65536;  Cache='f16'}
     'balanced'      = @{Parallel=2; Context=131072; Cache='q8_0'}
+    'single-200k'    = @{Parallel=1; Context=204800; Cache='q8_0'}
+    'agents-4'       = @{Parallel=4; Context=32768;  Cache='q8_0'}
+    'agents-8'       = @{Parallel=8; Context=16384;  Cache='q8_0'}
     'long-context'  = @{Parallel=1; Context=262144; Cache='q8_0'}
 }
 $preset = $profiles[$Profile]

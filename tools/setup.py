@@ -54,7 +54,7 @@ def copy_sources(root):
              'Stop-Bonsai.cmd', 'Switch-Bonsai.ps1',
              'OpenCode-Bonsai.ps1', 'OpenCode-Bonsai.cmd',
              'Install-OpenCode-Global.ps1', 'opencode.bonsai.example.json',
-             'artifacts.json', 'README.md',
+             'artifacts.json', 'README.md', 'LICENSE',
              'THIRD_PARTY.md']
     for name in names:
         shutil.copy2(SOURCE / name, root / name)

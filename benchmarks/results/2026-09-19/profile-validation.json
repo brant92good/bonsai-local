@@ -1,0 +1,45 @@
+{
+  "date": "2026-09-19",
+  "scope": "Startup, server metadata, VRAM capacity, and simultaneous HTTP request smoke tests",
+  "gpu": "NVIDIA GeForce RTX 3090 24 GB",
+  "model": "bonsai2-27b-abliterated",
+  "cache": { "k": "q8_0", "v": "q8_0" },
+  "profiles": [
+    {
+      "name": "single-200k",
+      "slots": 1,
+      "context_per_slot": 204800,
+      "total_context": 204800,
+      "gpu_memory_used_mib": 20173,
+      "gpu_memory_free_mib": 4150,
+      "simultaneous_requests": 1,
+      "successful_requests": 1
+    },
+    {
+      "name": "agents-4",
+      "slots": 4,
+      "context_per_slot": 32768,
+      "total_context": 131072,
+      "gpu_memory_used_mib": 18481,
+      "gpu_memory_free_mib": 5842,
+      "simultaneous_requests": 4,
+      "successful_requests": 4,
+      "smoke_wall_seconds": 0.767
+    },
+    {
+      "name": "agents-8",
+      "slots": 8,
+      "context_per_slot": 16384,
+      "total_context": 131072,
+      "gpu_memory_used_mib": 20245,
+      "gpu_memory_free_mib": 4078,
+      "simultaneous_requests": 8,
+      "successful_requests": 8,
+      "smoke_wall_seconds": 1.51
+    }
+  ],
+  "notes": [
+    "Memory readings are whole-GPU observations after each smoke run and include desktop applications.",
+    "The short deterministic replies validate concurrency and routing; they are not throughput benchmarks."
+  ]
+}

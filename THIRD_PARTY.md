@@ -10,6 +10,6 @@
 | KV-cache guidance | [PrismML](https://github.com/PrismML-Eng/Bonsai-demo/blob/main/KV-CACHE.md) |
 | vLLM GGUF format support | [vLLM GGUF plugin](https://github.com/vllm-project/vllm-gguf-plugin/blob/main/vllm_gguf_plugin/quantization/utils.py) |
 
-Model weights, CUDA libraries, and OpenCode are downloaded from their upstream releases and retain their respective licenses. artifacts.json pins revisions, sizes, and checksums. The included runtime patches target the MIT-licensed llama.cpp source; its license is reproduced in mtp/patches/LICENSE.llama.cpp.
+Repository-original scripts, documentation, synthetic fixtures, and benchmark results use the MIT license in LICENSE. Model weights, CUDA libraries, and OpenCode are downloaded from their upstream releases and retain their respective licenses. artifacts.json pins revisions, sizes, and checksums. The runtime patches target the MIT-licensed llama.cpp source; its license is reproduced in mtp/patches/LICENSE.llama.cpp. The MTP embedding change is adapted from the Apache-2.0 ProCreations release; that license is reproduced in mtp/patches/LICENSE.ProCreations.
 
 The abliterated derivative is optional and distributed under Apache-2.0 by its publisher. Its changed refusal behavior and evaluation claims come from the linked model card.

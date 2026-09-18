@@ -2,47 +2,36 @@
 
 ## Serving
 
-The standard launcher enables MTP with four draft tokens; the abliterated launcher defaults to two. Both use Q8 K/V cache, two 131,072-token slots, batch size 2048, and microbatch size 512. The API listens on localhost port 18080.
+The standard model uses four MTP draft tokens; the abliterated model uses two. All profiles use Q8 K/V cache and localhost port 18080.
 
-~~~powershell
-# Standard model: two long-context agents
-.\Start-Bonsai.ps1 -EnableGpu -Mtp -Profile balanced -BatchSize 2048 -MicroBatchSize 512
+| Profile | Slots | Context per slot | Batch / microbatch |
+|---|---:|---:|---:|
+| `single-200k` | 1 | 204,800 | 1024 / 256 |
+| `balanced` | 2 | 131,072 | 2048 / 512 |
+| `agents-4` | 4 | 32,768 | 2048 / 512 |
+| `agents-8` | 8 | 16,384 | 2048 / 512 |
 
-# Abliterated model: matching MTP weights and alias
-.\Start-Bonsai.ps1 -EnableGpu -Abliterated -Profile balanced -BatchSize 2048 -MicroBatchSize 512
+```powershell
+.\Start-Bonsai.ps1 -EnableGpu -Mtp -Profile single-200k
+.\Start-Bonsai.ps1 -EnableGpu -Abliterated -Profile agents-4
+.\Start-Bonsai.ps1 -EnableGpu -Abliterated -Profile agents-8
+```
 
-# Standard MTP model with speculation disabled
-.\Start-Bonsai.ps1 -EnableGpu -Mtp -DisableSpeculation -Profile balanced -BatchSize 2048 -MicroBatchSize 512
-
-# Four short-context agents
-.\Start-Bonsai.ps1 -EnableGpu -Mtp -ParallelRequests 4 -ContextPerUser 8192 -BatchSize 2048 -MicroBatchSize 512
-
-# Native 262K capacity; requires Setup.ps1 -AllModels
-.\Start-Bonsai.ps1 -EnableGpu -Packing PTQ1_0 -Profile long-context
-~~~
-
-Omit -EnableGpu to preview any configuration. The context limit includes input and output. Requests beyond the available slots queue on the server. Override MTP depth with -DraftTokens 1 through -DraftTokens 8.
-
-The 262K PTQ1/Q8 profile passed startup and a short reply. Retrieval was tested at 119,816 prompt tokens. Four simultaneous 131K Q8 contexts were not tested on the 24 GB GPU.
+Omit `-EnableGpu` to preview a configuration. The context limit includes input and output. Requests beyond the slot count queue on the server. Override MTP depth with `-DraftTokens 1` through `-DraftTokens 8`.
 
 ## OpenCode
 
-~~~powershell
+```powershell
 .\Install-OpenCode-Global.ps1
 bonsai-standard C:\src\my-project
-bonsai-abliterated C:\src\my-project
-~~~
+bonsai-long C:\src\my-project
+bonsai-agents-4 C:\src\my-project
+bonsai-agents-8 C:\src\my-project
+```
 
-The global launch commands load and verify the selected server before opening OpenCode. OpenCode-Bonsai.ps1 provides the same behavior through the bundled client. A model selection made inside an already-open client does not reload weights.
+Abliterated commands are `bonsai-abliterated`, `bonsai-abliterated-long`, `bonsai-abliterated-agents-4`, and `bonsai-abliterated-agents-8`. The global commands verify the model alias, context size, and slot count before opening OpenCode. A model selection inside an already-open client cannot reload server weights.
 
-| Field | Standard | Abliterated |
-|---|---|---|
-| Base URL | http://127.0.0.1:18080/v1 | http://127.0.0.1:18080/v1 |
-| Model | bonsai2-27b | bonsai2-27b-abliterated |
-| Context limit | 131072 | 131072 |
-| Output limit | 8192 | 8192 |
-
-The local server does not require authentication by default. LAN binding requires -ListenAddress 0.0.0.0 -ApiKeyFile PATH.
+The local server does not require authentication by default. LAN binding requires `-ListenAddress 0.0.0.0 -ApiKeyFile PATH`.
 
 ## Installation
 

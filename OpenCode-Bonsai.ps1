@@ -1,17 +1,31 @@
 [CmdletBinding()]
 param(
     [string]$ProjectPath = (Get-Location).Path,
-    [switch]$Abliterated
+    [switch]$Abliterated,
+    [ValidateSet('balanced','single-200k','agents-4','agents-8')]
+    [string]$ServingProfile = 'balanced',
+    [switch]$LongContext
 )
 $ErrorActionPreference = 'Stop'
+if ($LongContext) { $ServingProfile = 'single-200k' }
 $project = (Resolve-Path -LiteralPath $ProjectPath).Path
-$model = if ($Abliterated) { 'bonsai/bonsai2-27b-abliterated' } else { 'bonsai/bonsai2-27b' }
 $variant = if ($Abliterated) { 'abliterated' } else { 'standard' }
+$modelIds = @{
+    'standard/balanced' = 'bonsai/bonsai2-27b'
+    'standard/single-200k' = 'bonsai/bonsai2-27b-200k'
+    'standard/agents-4' = 'bonsai/bonsai2-27b-4x32k'
+    'standard/agents-8' = 'bonsai/bonsai2-27b-8x16k'
+    'abliterated/balanced' = 'bonsai/bonsai2-27b-abliterated'
+    'abliterated/single-200k' = 'bonsai/bonsai2-27b-abliterated-200k'
+    'abliterated/agents-4' = 'bonsai/bonsai2-27b-abliterated-4x32k'
+    'abliterated/agents-8' = 'bonsai/bonsai2-27b-abliterated-8x16k'
+}
+$model = $modelIds["$variant/$ServingProfile"]
 if (-not (Test-Path -LiteralPath $project -PathType Container)) { throw 'ProjectPath must be a directory.' }
 $binary = Join-Path $PSScriptRoot 'clients\opencode\opencode.exe'
 if (-not (Test-Path -LiteralPath $binary)) { throw 'Run Setup.ps1 to install OpenCode.' }
-$selection = & (Join-Path $PSScriptRoot 'Switch-Bonsai.ps1') -Variant $variant
-Write-Host "Using $($selection.Model) at $($selection.Api)" -ForegroundColor Green
+$selection = & (Join-Path $PSScriptRoot 'Switch-Bonsai.ps1') -Variant $variant -ServingProfile $ServingProfile
+Write-Host "Using $($selection.Model), $($selection.Context) tokens, $($selection.Slots) slot(s)" -ForegroundColor Green
 $keys = @('OPENCODE_CONFIG','OPENCODE_CONFIG_CONTENT','XDG_CONFIG_HOME','XDG_DATA_HOME','XDG_CACHE_HOME','XDG_STATE_HOME')
 $previous = @{}
 foreach ($key in $keys) { $previous[$key] = [Environment]::GetEnvironmentVariable($key, 'Process') }
