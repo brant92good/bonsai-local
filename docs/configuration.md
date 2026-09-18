@@ -29,11 +29,11 @@ The 262K PTQ1/Q8 profile passed startup and a short reply. Retrieval was tested 
 
 ~~~powershell
 .\Install-OpenCode-Global.ps1
-opencode C:\src\my-project --model bonsai/bonsai2-27b
-opencode C:\src\my-project --model bonsai/bonsai2-27b-abliterated
+bonsai-standard C:\src\my-project
+bonsai-abliterated C:\src\my-project
 ~~~
 
-The global config contains separate standard and abliterated entries. OpenCode-Bonsai.ps1 -Abliterated provides the same selection through the bundled client and rejects a mismatched running server.
+The global launch commands load and verify the selected server before opening OpenCode. OpenCode-Bonsai.ps1 provides the same behavior through the bundled client. A model selection made inside an already-open client does not reload weights.
 
 | Field | Standard | Abliterated |
 |---|---|---|

@@ -25,7 +25,7 @@ cd bonsai-local
 In another terminal:
 
 ~~~powershell
-opencode C:\path\to\your\project --model bonsai/bonsai2-27b
+bonsai-standard C:\path\to\your\project
 ~~~
 
 Setup.ps1 downloads and builds without loading the model. Stop-Bonsai.cmd releases VRAM. Preview-settings-no-GPU.cmd previews the server command.
@@ -35,10 +35,12 @@ Setup.ps1 downloads and builds without loading the model. Stop-Bonsai.cmd releas
 ~~~powershell
 .\Setup.ps1 -Abliterated
 .\Start-Bonsai.ps1 -EnableGpu -Abliterated -Profile balanced -BatchSize 2048 -MicroBatchSize 512
-opencode C:\path\to\your\project --model bonsai/bonsai2-27b-abliterated
+bonsai-abliterated C:\path\to\your\project
 ~~~
 
 The abliterated model has separate verified weights, server alias, and OpenCode profile. Its launcher defaults to two draft tokens.
+
+Only one model fits in VRAM at a time. The global launch commands stop the owned server when necessary, load the requested weights, verify the active alias, and then open OpenCode. Selecting a model inside an already-open client does not reload server weights.
 
 ## Default profile
 

@@ -6,18 +6,12 @@ param(
 $ErrorActionPreference = 'Stop'
 $project = (Resolve-Path -LiteralPath $ProjectPath).Path
 $model = if ($Abliterated) { 'bonsai/bonsai2-27b-abliterated' } else { 'bonsai/bonsai2-27b' }
-$serverModel = if ($Abliterated) { 'bonsai2-27b-abliterated' } else { 'bonsai2-27b' }
+$variant = if ($Abliterated) { 'abliterated' } else { 'standard' }
 if (-not (Test-Path -LiteralPath $project -PathType Container)) { throw 'ProjectPath must be a directory.' }
 $binary = Join-Path $PSScriptRoot 'clients\opencode\opencode.exe'
 if (-not (Test-Path -LiteralPath $binary)) { throw 'Run Setup.ps1 to install OpenCode.' }
-try {
-    $available = Invoke-RestMethod 'http://127.0.0.1:18080/v1/models' -TimeoutSec 3
-} catch {
-    throw 'Start the Bonsai server first.'
-}
-if ($serverModel -notin @($available.data.id)) {
-    throw "The running server does not provide $serverModel. Start the matching model variant."
-}
+$selection = & (Join-Path $PSScriptRoot 'Switch-Bonsai.ps1') -Variant $variant
+Write-Host "Using $($selection.Model) at $($selection.Api)" -ForegroundColor Green
 $keys = @('OPENCODE_CONFIG','OPENCODE_CONFIG_CONTENT','XDG_CONFIG_HOME','XDG_DATA_HOME','XDG_CACHE_HOME','XDG_STATE_HOME')
 $previous = @{}
 foreach ($key in $keys) { $previous[$key] = [Environment]::GetEnvironmentVariable($key, 'Process') }

@@ -59,6 +59,21 @@ if ($config.enabled_providers) {
 }
 $config | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $configPath -Encoding UTF8
 
+$standardCommand = @'
+@echo off
+set "BONSAI_PROJECT=%~1"
+if "%BONSAI_PROJECT%"=="" set "BONSAI_PROJECT=%CD%"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "__ROOT__\OpenCode-Bonsai.ps1" -ProjectPath "%BONSAI_PROJECT%"
+'@.Replace('__ROOT__', $PSScriptRoot)
+$abliteratedCommand = @'
+@echo off
+set "BONSAI_PROJECT=%~1"
+if "%BONSAI_PROJECT%"=="" set "BONSAI_PROJECT=%CD%"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "__ROOT__\OpenCode-Bonsai.ps1" -Abliterated -ProjectPath "%BONSAI_PROJECT%"
+'@.Replace('__ROOT__', $PSScriptRoot)
+Set-Content -LiteralPath (Join-Path $InstallDir 'bonsai-standard.cmd') -Value $standardCommand -Encoding ASCII
+Set-Content -LiteralPath (Join-Path $InstallDir 'bonsai-abliterated.cmd') -Value $abliteratedCommand -Encoding ASCII
+
 Write-Host "OpenCode $(& $target --version) installed at $target"
 Write-Host "Config: $configPath"
-Write-Host 'Models: bonsai/bonsai2-27b, bonsai/bonsai2-27b-abliterated'
+Write-Host 'Commands: bonsai-standard, bonsai-abliterated'

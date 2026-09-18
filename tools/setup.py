@@ -51,7 +51,8 @@ def copy_sources(root):
         return
     names = ['Setup.ps1', 'Start-Bonsai.ps1', 'Stop-Bonsai.ps1',
              'Start-GPU-after-gaming.cmd', 'Preview-settings-no-GPU.cmd',
-             'Stop-Bonsai.cmd', 'OpenCode-Bonsai.ps1', 'OpenCode-Bonsai.cmd',
+             'Stop-Bonsai.cmd', 'Switch-Bonsai.ps1',
+             'OpenCode-Bonsai.ps1', 'OpenCode-Bonsai.cmd',
              'Install-OpenCode-Global.ps1', 'opencode.bonsai.example.json',
              'artifacts.json', 'README.md',
              'THIRD_PARTY.md']
