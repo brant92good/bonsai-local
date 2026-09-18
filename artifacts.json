@@ -1,0 +1,77 @@
+{
+  "runtime": {
+    "repository": "https://github.com/PrismML-Eng/llama.cpp",
+    "revision": "d8f26eec76da6d09bb708bcba51ef64b8cd868a3",
+    "patches": [
+      {
+        "path": "mtp/patches/runtime-bonsai-mtp-embedding.patch",
+        "sha256": "f1e1809560c86b792ba2eed11878a95b42089c20083b891f708b8651604e713f"
+      },
+      {
+        "path": "mtp/patches/runtime-props-speculation.patch",
+        "sha256": "bcc0eeb5dfa46a34e1f30826f60a359ed165f4dab05c4633cfa64c4ac150bc05"
+      }
+    ]
+  },
+  "files": [
+    {
+      "url": "https://github.com/PrismML-Eng/llama.cpp/releases/download/prism-b10683-d8f26ee/llama-prism-b10683-d8f26ee-bin-win-cuda-12.4-x64.zip",
+      "name": "llama-prism-b10683-d8f26ee-bin-win-cuda-12.4-x64.zip",
+      "size": 253365422,
+      "sha256": "07a4c945779bda6b0e12e51ad97c55858e126ea903bfdb3053a16cd29d2f2257",
+      "dir": "downloads",
+      "default": true,
+      "extract_to": "bin"
+    },
+    {
+      "url": "https://github.com/PrismML-Eng/llama.cpp/releases/download/prism-b10683-d8f26ee/cudart-llama-bin-win-cuda-12.4-x64.zip",
+      "name": "cudart-llama-bin-win-cuda-12.4-x64.zip",
+      "size": 391443627,
+      "sha256": "8c79a9b226de4b3cacfd1f83d24f962d0773be79f1e7b75c6af4ded7e32ae1d6",
+      "dir": "downloads",
+      "default": true,
+      "extract_to": "bin"
+    },
+    {
+      "url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/resolve/6ed5e12bf84b7a63069882c91dd9e9218647d17b/Ternary-Bonsai-2-27B-PTQ1_0.gguf",
+      "name": "Ternary-Bonsai-2-27B-PTQ1_0.gguf",
+      "size": 5946648928,
+      "sha256": "53107f530aa52eb00912263ab1ee29bd199261c87cd7b4ad4ca1318c1fe33ee3",
+      "dir": "models",
+      "default": false
+    },
+    {
+      "url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/resolve/6ed5e12bf84b7a63069882c91dd9e9218647d17b/Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf",
+      "name": "Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf",
+      "size": 629246976,
+      "sha256": "6807ede61d570bb86ba34b756a0fa109edc33668604de867c6ea6d8f1d631903",
+      "dir": "models",
+      "default": false
+    },
+    {
+      "url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/resolve/6ed5e12bf84b7a63069882c91dd9e9218647d17b/Ternary-Bonsai-2-27B-PQ2_0.gguf",
+      "name": "Ternary-Bonsai-2-27B-PQ2_0.gguf",
+      "size": 7206168928,
+      "sha256": "3907dc1658db1f78a9826bf8d5bcb8dc65db0d466388937af57f2294fae62ec1",
+      "dir": "models",
+      "default": false
+    },
+    {
+      "name": "Ternary-Bonsai-2-27B-PQ2_0-MTP-Q8_0.gguf",
+      "url": "https://huggingface.co/ProCreations/Ternary-Bonsai-2-27B-MTP/resolve/6f66852e436806f0db2b6ff5351bf30a0eaa95f9/Ternary-Bonsai-2-27B-PQ2_0-MTP-Q8_0.gguf",
+      "size": 7657489728,
+      "sha256": "83a0aea0d7c3e7c8a9bd4e8d4ef85a3a14b33c92d1eebb161b40afb239c81bb3",
+      "dir": "models",
+      "default": true
+    },
+    {
+      "name": "opencode-windows-x64.zip",
+      "dir": "downloads",
+      "url": "https://github.com/anomalyco/opencode/releases/download/v1.18.31/opencode-windows-x64.zip",
+      "size": 60718498,
+      "sha256": "0ecd7ffc7f26390ce7799e7bcd409e4f11c410144308a6a5b0fcdce63d871006",
+      "default": true,
+      "extract_to": "clients/opencode"
+    }
+  ]
+}

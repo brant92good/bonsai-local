@@ -1,0 +1,64 @@
+{
+  "source_repository": "https://github.com/PrismML-Eng/llama.cpp",
+  "source_revision": "d8f26eec76da6d09bb708bcba51ef64b8cd868a3",
+  "patch_source": "https://huggingface.co/ProCreations/Ternary-Bonsai-2-27B-MTP/resolve/6f66852e436806f0db2b6ff5351bf30a0eaa95f9/runtime/bonsai-mtp-embedding.patch",
+  "patch_sha256": "f1e1809560c86b792ba2eed11878a95b42089c20083b891f708b8651604e713f",
+  "platform": "Windows x64",
+  "cuda_toolkit": "13.3",
+  "gpu_architecture": "86 (RTX 3090)",
+  "msvc": "19.44.35227.0",
+  "config": "Release, CUDA on, UI off, OpenSSL off, 4 build jobs",
+  "build_success": true,
+  "properties_fix": {
+    "file": "runtime-props-speculation.patch",
+    "sha256": "bcc0eeb5dfa46a34e1f30826f60a359ed165f4dab05c4633cfa64c4ac150bc05",
+    "purpose": "Report actual speculative types in /props; no inference change"
+  },
+  "files": [
+    {
+      "file": "<install-root>\\mtp\\llama\\build\\bin\\ggml-base.dll",
+      "bytes": 674304,
+      "sha256": "8f31f5c125bf87b0267b2e42b09313e01f4b43594cc0faf0482c249148fb9a6f"
+    },
+    {
+      "file": "<install-root>\\mtp\\llama\\build\\bin\\ggml-cpu.dll",
+      "bytes": 941568,
+      "sha256": "2a3d09c7859292460e7ded669ecdb595bdb2fbd58498c43f8269416be18b106e"
+    },
+    {
+      "file": "<install-root>\\mtp\\llama\\build\\bin\\ggml-cuda.dll",
+      "bytes": 53026816,
+      "sha256": "960fbd2b55a1062659aaf4349cf9a832b0d4c474b17f82d3c37087fdf06f2493"
+    },
+    {
+      "file": "<install-root>\\mtp\\llama\\build\\bin\\ggml.dll",
+      "bytes": 67072,
+      "sha256": "ccfa36574b906f574d921fd53b479f243b0030eed977eafaa7fd7da06f0088fc"
+    },
+    {
+      "file": "<install-root>\\mtp\\llama\\build\\bin\\llama-common.dll",
+      "bytes": 8177664,
+      "sha256": "546d6ec7776255783b441aab2ee59d4fef770fa3259eaba29f5a3b3aa7873c70"
+    },
+    {
+      "file": "<install-root>\\mtp\\llama\\build\\bin\\llama-server-impl.dll",
+      "bytes": 13079552,
+      "sha256": "dc9f21755b89a7fb8281c24282daa7090ffb87336801279b8a0fb629ba607ca4"
+    },
+    {
+      "file": "<install-root>\\mtp\\llama\\build\\bin\\llama-server.exe",
+      "bytes": 10752,
+      "sha256": "b6cd09f80f70c89bb88e1eb0540f0f8b178ffc798e75bc97f4225b68ae01a412"
+    },
+    {
+      "file": "<install-root>\\mtp\\llama\\build\\bin\\llama.dll",
+      "bytes": 2526720,
+      "sha256": "32decff83f2faef80aca854cf38b8888adb42734b3a8ae40124ae0fb245c675d"
+    },
+    {
+      "file": "<install-root>\\mtp\\llama\\build\\bin\\mtmd.dll",
+      "bytes": 2377728,
+      "sha256": "f36f7ede6e2a66cdc8a75b9c83c7f0e6dbe7e785efe9f8999532db1c73702e77"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "date": "2026-09-19",
+  "timezone": "Asia/Taipei",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "gpu_memory_mib": 24576,
+  "driver": "616.92",
+  "cpu": "Intel Core i5-13600K",
+  "ram_gib": 31.7,
+  "platform": "Windows x64",
+  "cuda_mtp": "13.3",
+  "cuda_stock": "12.4",
+  "opencode": "1.18.31",
+  "codex": "0.155.0"
+}

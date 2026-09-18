@@ -1,0 +1,12 @@
+diff --git a/tools/server/server-context.cpp b/tools/server/server-context.cpp
+index a9edbd7..9cbdeeb 100644
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@ -4473,6 +4473,7 @@ static json get_res_props(const server_context_meta & meta, const common_params
+ 
+     task_params tparams;
+     tparams.sampling = params.sampling;
++    tparams.speculative = params.speculative;
+     json default_generation_settings_for_props = json {
+         { "params", tparams.to_json(true) },
+         { "n_ctx",  meta.slot_n_ctx },

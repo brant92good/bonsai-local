@@ -1,0 +1,28 @@
+{
+  "provider": {
+    "bonsai": {
+      "options": {
+        "apiKey": "local-bonsai",
+        "baseURL": "http://127.0.0.1:18080/v1"
+      },
+      "models": {
+        "bonsai2-27b": {
+          "limit": {
+            "output": 8192,
+            "context": 131072
+          },
+          "name": "Bonsai 2 27B"
+        }
+      },
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Bonsai local"
+    }
+  },
+  "$schema": "https://opencode.ai/config.json",
+  "model": "bonsai/bonsai2-27b",
+  "enabled_providers": [
+    "bonsai"
+  ],
+  "autoupdate": false,
+  "share": "disabled"
+}

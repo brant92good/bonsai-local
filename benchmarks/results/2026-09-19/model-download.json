@@ -1,0 +1,9 @@
+{
+  "repo": "ProCreations/Ternary-Bonsai-2-27B-MTP",
+  "revision": "6f66852e436806f0db2b6ff5351bf30a0eaa95f9",
+  "url": "https://huggingface.co/ProCreations/Ternary-Bonsai-2-27B-MTP/resolve/6f66852e436806f0db2b6ff5351bf30a0eaa95f9/Ternary-Bonsai-2-27B-PQ2_0-MTP-Q8_0.gguf",
+  "file": "<install-root>\\models\\Ternary-Bonsai-2-27B-PQ2_0-MTP-Q8_0.gguf",
+  "bytes": 7657489728,
+  "sha256": "83a0aea0d7c3e7c8a9bd4e8d4ef85a3a14b33c92d1eebb161b40afb239c81bb3",
+  "verified": true
+}
