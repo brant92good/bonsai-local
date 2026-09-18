@@ -1,0 +1,33 @@
+{
+  "date": "2026-09-19",
+  "hardware": "NVIDIA GeForce RTX 3090 24 GiB",
+  "runtime": "Prism llama.cpp b1-d8f26ee",
+  "model": "bonsai2-27b-abliterated",
+  "profile": "agents-8",
+  "kv_cache": {
+    "unified": true,
+    "type_k": "q8_0",
+    "type_v": "q8_0",
+    "context_pool": 204800,
+    "max_slots": 8,
+    "fixed_per_slot_partition": false
+  },
+  "parallel_smoke": {
+    "requests": 8,
+    "passed": 8,
+    "wall_seconds": 1.359,
+    "prompt_tokens_each": 20,
+    "completion_tokens_each": 7
+  },
+  "single_slot_long_context": {
+    "fixture": "benchmarks/fixtures/retrieval-120000.json",
+    "prompt_tokens": 119816,
+    "completion_tokens": 70,
+    "fields_correct": 4,
+    "fields_total": 4,
+    "passed": true,
+    "wall_seconds": 172.691
+  },
+  "loaded_gpu_memory_mib": 23445,
+  "free_gpu_memory_mib": 878
+}

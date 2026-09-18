@@ -59,7 +59,7 @@ The MTP file preserves all 851 stock PQ2 tensors byte for byte and adds 15 tenso
 
 ## Context and memory
 
-The default MTP profile allocates two independent 131,072-token contexts. Total GPU memory reached approximately 22.5 GiB, including the desktop. The server's approximate increment was 19 GiB. Additional GPU applications reduce the available headroom.
+The recorded draft sweep used two independent 131,072-token contexts before unified KV became the default. Total GPU memory reached approximately 22.5 GiB, including the desktop. The server's approximate increment was 19 GiB. Additional GPU applications reduce the available headroom.
 
 At 119,816 prompt tokens, MTP recovered all four target fields in 192.7 seconds. The test covers early, middle, and late records plus a superseding configuration value. Full 262,144-token retrieval was not tested.
 

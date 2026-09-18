@@ -14,20 +14,24 @@ $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
 $expectedModel = if ($Variant -eq 'abliterated') { 'bonsai2-27b-abliterated' } else { 'bonsai2-27b' }
 $profiles = @{
-    'balanced'   = @{ Context = 131072; Slots = 2; Batch = 2048; MicroBatch = 512 }
-    'single-200k'= @{ Context = 204800; Slots = 1; Batch = 1024; MicroBatch = 256 }
-    'agents-4'   = @{ Context = 32768;  Slots = 4; Batch = 2048; MicroBatch = 512 }
-    'agents-8'   = @{ Context = 16384;  Slots = 8; Batch = 2048; MicroBatch = 512 }
+    'balanced'   = @{ ContextPool = 204800; Slots = 2; Batch = 2048; MicroBatch = 512 }
+    'single-200k'= @{ ContextPool = 204800; Slots = 1; Batch = 1024; MicroBatch = 256 }
+    'agents-4'   = @{ ContextPool = 204800; Slots = 4; Batch = 2048; MicroBatch = 512 }
+    'agents-8'   = @{ ContextPool = 204800; Slots = 8; Batch = 2048; MicroBatch = 512 }
 }
 $target = $profiles[$ServingProfile]
 
 function Get-LoadedRuntime {
     try {
         $props = Invoke-RestMethod 'http://127.0.0.1:18080/props' -TimeoutSec 2
+        $listener = Get-NetTCPConnection -LocalPort 18080 -State Listen -ErrorAction Stop | Select-Object -First 1
+        $process = Get-CimInstance Win32_Process -Filter "ProcessId=$($listener.OwningProcess)"
+        $arguments = [string]$process.CommandLine
         [pscustomobject]@{
             Model = [string]$props.model_alias
-            Context = [int]$props.default_generation_settings.n_ctx
+            ContextPool = [int]$props.default_generation_settings.n_ctx
             Slots = [int]$props.total_slots
+            UnifiedKv = $arguments -match '(?:^|\s)--kv-unified(?:\s|$)' -and $arguments -notmatch '(?:^|\s)--no-kv-unified(?:\s|$)'
         }
     } catch {
         $null
@@ -37,8 +41,9 @@ function Get-LoadedRuntime {
 $active = Get-LoadedRuntime
 $reused = (-not $ForceRestart) -and $active -and
     $active.Model -eq $expectedModel -and
-    $active.Context -eq $target.Context -and
-    $active.Slots -eq $target.Slots
+    $active.ContextPool -eq $target.ContextPool -and
+    $active.Slots -eq $target.Slots -and
+    $active.UnifiedKv
 if (-not $reused) {
     & (Join-Path $root 'Stop-Bonsai.ps1')
     Start-Sleep -Milliseconds 500
@@ -74,19 +79,20 @@ if (-not $reused) {
         }
         Start-Sleep -Seconds 1
         $active = Get-LoadedRuntime
-    } while ((-not $active -or $active.Model -ne $expectedModel -or $active.Context -ne $target.Context -or $active.Slots -ne $target.Slots) -and [DateTime]::UtcNow -lt $deadline)
+    } while ((-not $active -or $active.Model -ne $expectedModel -or $active.ContextPool -ne $target.ContextPool -or $active.Slots -ne $target.Slots -or -not $active.UnifiedKv) -and [DateTime]::UtcNow -lt $deadline)
 
-    if (-not $active -or $active.Model -ne $expectedModel -or $active.Context -ne $target.Context -or $active.Slots -ne $target.Slots) {
+    if (-not $active -or $active.Model -ne $expectedModel -or $active.ContextPool -ne $target.ContextPool -or $active.Slots -ne $target.Slots -or -not $active.UnifiedKv) {
         & (Join-Path $root 'Stop-Bonsai.ps1')
-        throw "Timed out waiting for $expectedModel with $($target.Context) context and $($target.Slots) slot(s)."
+        throw "Timed out waiting for $expectedModel with a $($target.ContextPool)-token unified KV pool and $($target.Slots) slot(s)."
     }
 }
 [pscustomobject]@{
     Variant = $Variant
     Profile = $ServingProfile
     Model = $expectedModel
-    Context = $target.Context
+    ContextPool = $target.ContextPool
     Slots = $target.Slots
+    UnifiedKv = $true
     Api = 'http://127.0.0.1:18080/v1'
     Reused = [bool]$reused
 }

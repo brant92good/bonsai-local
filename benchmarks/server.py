@@ -26,14 +26,14 @@ if ($listener) {
 
 
 @contextlib.contextmanager
-def server(name, slots=2, context=131072, no_spec=False, draft=4):
+def server(name, slots=2, context_pool=204800, no_spec=False, draft=4):
     with socket.socket() as connection:
         if connection.connect_ex(('127.0.0.1', 18081)) == 0:
             raise RuntimeError('Benchmark port 18081 is already in use.')
     before = b.gpu()
     args = ['powershell.exe', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File',
             str(b.ROOT / 'Start-Bonsai.ps1'), '-EnableGpu', '-Mtp',
-            '-ParallelRequests', str(slots), '-ContextPerUser', str(context),
+            '-ParallelRequests', str(slots), '-TotalContext', str(context_pool),
             '-CacheTypeK', 'q8_0', '-CacheTypeV', 'q8_0', '-Port', '18081',
             '-BatchSize', '2048', '-MicroBatchSize', '512', '-DraftTokens', str(draft)]
     if no_spec:
@@ -56,7 +56,8 @@ def server(name, slots=2, context=131072, no_spec=False, draft=4):
             b.save({'kind': 'profile_capacity', 'mode': name, 'packing': 'PQ2_0',
                     'cache_k': 'q8_0', 'cache_v': 'q8_0', 'batch': 2048, 'ubatch': 512,
                     'slots': props['total_slots'],
-                    'context_per_slot': props['default_generation_settings']['n_ctx'],
+                    'context_pool': props['default_generation_settings']['n_ctx'],
+                    'unified_kv': True,
                     'mtp_model': True, 'draft_tokens': 0 if no_spec else draft,
                     'speculation': props['default_generation_settings']['params'].get('speculative.types'),
                     'gpu_before': before, 'gpu_loaded': b.gpu()})

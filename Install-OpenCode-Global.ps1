@@ -33,36 +33,36 @@ $config | Add-Member NoteProperty '$schema' 'https://opencode.ai/config.json' -F
 if (-not $config.provider) { $config | Add-Member NoteProperty provider ([pscustomobject]@{}) -Force }
 $models = [ordered]@{
     'bonsai2-27b' = [ordered]@{
-        name = 'Bonsai 2 27B - Standard MTP (2x131K, draft 4)'
-        limit = [ordered]@{ context = 131072; output = 8192 }
+        name = 'Bonsai 2 27B - Standard MTP (shared 200K, 2 slots, draft 4)'
+        limit = [ordered]@{ context = 204800; output = 8192 }
     }
     'bonsai2-27b-abliterated' = [ordered]@{
-        name = 'Bonsai 2 27B - Abliterated MTP (2x131K, draft 2)'
-        limit = [ordered]@{ context = 131072; output = 8192 }
+        name = 'Bonsai 2 27B - Abliterated MTP (shared 200K, 2 slots, draft 2)'
+        limit = [ordered]@{ context = 204800; output = 8192 }
     }
     'bonsai2-27b-200k' = [ordered]@{
-        name = 'Bonsai 2 27B - Standard MTP (1x200K, draft 4)'
+        name = 'Bonsai 2 27B - Standard MTP (dedicated 200K, draft 4)'
         limit = [ordered]@{ context = 204800; output = 8192 }
     }
     'bonsai2-27b-abliterated-200k' = [ordered]@{
-        name = 'Bonsai 2 27B - Abliterated MTP (1x200K, draft 2)'
+        name = 'Bonsai 2 27B - Abliterated MTP (dedicated 200K, draft 2)'
         limit = [ordered]@{ context = 204800; output = 8192 }
     }
-    'bonsai2-27b-4x32k' = [ordered]@{
-        name = 'Bonsai 2 27B - Standard MTP (4x32K)'
-        limit = [ordered]@{ context = 32768; output = 8192 }
+    'bonsai2-27b-agents-4' = [ordered]@{
+        name = 'Bonsai 2 27B - Standard MTP (shared 200K, 4 slots)'
+        limit = [ordered]@{ context = 204800; output = 8192 }
     }
-    'bonsai2-27b-abliterated-4x32k' = [ordered]@{
-        name = 'Bonsai 2 27B - Abliterated MTP (4x32K)'
-        limit = [ordered]@{ context = 32768; output = 8192 }
+    'bonsai2-27b-abliterated-agents-4' = [ordered]@{
+        name = 'Bonsai 2 27B - Abliterated MTP (shared 200K, 4 slots)'
+        limit = [ordered]@{ context = 204800; output = 8192 }
     }
-    'bonsai2-27b-8x16k' = [ordered]@{
-        name = 'Bonsai 2 27B - Standard MTP (8x16K)'
-        limit = [ordered]@{ context = 16384; output = 8192 }
+    'bonsai2-27b-agents-8' = [ordered]@{
+        name = 'Bonsai 2 27B - Standard MTP (shared 200K, 8 slots)'
+        limit = [ordered]@{ context = 204800; output = 8192 }
     }
-    'bonsai2-27b-abliterated-8x16k' = [ordered]@{
-        name = 'Bonsai 2 27B - Abliterated MTP (8x16K)'
-        limit = [ordered]@{ context = 16384; output = 8192 }
+    'bonsai2-27b-abliterated-agents-8' = [ordered]@{
+        name = 'Bonsai 2 27B - Abliterated MTP (shared 200K, 8 slots)'
+        limit = [ordered]@{ context = 204800; output = 8192 }
     }
 }
 $bonsai = [ordered]@{

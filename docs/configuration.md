@@ -4,12 +4,12 @@
 
 The standard model uses four MTP draft tokens; the abliterated model uses two. All profiles use Q8 K/V cache and localhost port 18080.
 
-| Profile | Slots | Context per slot | Batch / microbatch |
+| Profile | Max slots | Shared KV pool | Batch / microbatch |
 |---|---:|---:|---:|
 | `single-200k` | 1 | 204,800 | 1024 / 256 |
-| `balanced` | 2 | 131,072 | 2048 / 512 |
-| `agents-4` | 4 | 32,768 | 2048 / 512 |
-| `agents-8` | 8 | 16,384 | 2048 / 512 |
+| `balanced` | 2 | 204,800 | 2048 / 512 |
+| `agents-4` | 4 | 204,800 | 2048 / 512 |
+| `agents-8` | 8 | 204,800 | 2048 / 512 |
 
 ```powershell
 .\Start-Bonsai.ps1 -EnableGpu -Mtp -Profile single-200k
@@ -17,7 +17,9 @@ The standard model uses four MTP draft tokens; the abliterated model uses two. A
 .\Start-Bonsai.ps1 -EnableGpu -Abliterated -Profile agents-8
 ```
 
-Omit `-EnableGpu` to preview a configuration. The context limit includes input and output. Requests beyond the slot count queue on the server. Override MTP depth with `-DraftTokens 1` through `-DraftTokens 8`.
+All active requests share one unified KV pool; slot count controls scheduling capacity and does not divide the pool. A single request can use most of the pool while other slots are idle. The combined cached tokens cannot exceed the pool.
+
+Omit `-EnableGpu` to preview a configuration. Override the pool with `-TotalContext`; the limit includes input and output. Requests beyond the slot count queue on the server. Override MTP depth with `-DraftTokens 1` through `-DraftTokens 8`.
 
 ## OpenCode
 

@@ -4,12 +4,11 @@
 
 Run Ternary Bonsai 2 27B through an OpenAI-compatible local server with Q8 KV cache, MTP speculative decoding, and OpenCode.
 
+- **204,800-token shared KV pool** across 2, 4, or 8 agent slots.
 - **124.2 tokens/sec combined** in the two-agent draft-length sweep.
-- **131,072 tokens per agent** with two concurrent slots.
 - **120K-token retrieval verified** across early, middle, and late records.
-- **23.0 GiB total VRAM** observed with the default profile.
 - Standard and abliterated MTP variants.
-- Verified 1-, 2-, 4-, and 8-request serving profiles.
+- Q8 K/V cache with MTP speculative decoding.
 
 ## Quick start
 
@@ -33,14 +32,14 @@ Setup.ps1 downloads and builds without loading the model. Stop-Bonsai.cmd releas
 
 ## Launch profiles
 
-| Standard | Abliterated | Slots | Context per slot |
+| Standard | Abliterated | Max slots | KV pool |
 |---|---|---:|---:|
 | `bonsai-long` | `bonsai-abliterated-long` | 1 | 204,800 |
-| `bonsai-standard` | `bonsai-abliterated` | 2 | 131,072 |
-| `bonsai-agents-4` | `bonsai-abliterated-agents-4` | 4 | 32,768 |
-| `bonsai-agents-8` | `bonsai-abliterated-agents-8` | 8 | 16,384 |
+| `bonsai-standard` | `bonsai-abliterated` | 2 | 204,800 shared |
+| `bonsai-agents-4` | `bonsai-abliterated-agents-4` | 4 | 204,800 shared |
+| `bonsai-agents-8` | `bonsai-abliterated-agents-8` | 8 | 204,800 shared |
 
-Pass a project directory as the optional first argument. The launcher verifies the loaded weights, slot count, and context size before opening OpenCode.
+Active requests draw from one unified KV pool. One agent can use most of the pool while the other slots are idle. Eight concurrent replies and a 119,816-token single-slot retrieval passed on the 8-slot profile. [Validation result](benchmarks/results/2026-09-19/unified-kv-validation.json).`r`n`r`nPass a project directory as the optional first argument. The launcher verifies the loaded weights, slot count, shared context size, and unified-cache mode before opening OpenCode.
 
 ## Abliterated variant
 
@@ -62,8 +61,8 @@ Only one model fits in VRAM at a time. The global launch commands stop the owned
 | KV cache | Q8 K / Q8 V |
 | Standard speculation | MTP, 4 draft tokens |
 | Abliterated speculation | MTP, 2 draft tokens |
-| Concurrent requests | 2 |
-| Context per request | 131,072 tokens, including output |
+| Maximum active requests | 2 |
+| Context allocation | 204,800 tokens shared across active requests |
 | API | http://127.0.0.1:18080/v1 |
 | Standard model ID | bonsai2-27b |
 | Abliterated model ID | bonsai2-27b-abliterated |
@@ -72,7 +71,7 @@ The native model limit is 262,144 tokens. [Profiles and configuration](docs/conf
 
 ## Performance
 
-RTX 3090, two 131K slots, Q8 K/V cache, three runs per mode:
+Historical fixed-slot benchmark on an RTX 3090 with two 131K slots, Q8 K/V cache, and three runs per mode:
 
 | Draft length | Two-agent coding | Cached 6K prompts | Coding checks |
 |---|---:|---:|---:|

@@ -46,7 +46,7 @@ def main():
         for off in (True, False):
             name = ('mtp-two-control' if off else 'mtp-two-recheck') if args.suite == 'two-agent' else ('mtp-disabled' if off else 'mtp-enabled')
             with server(name, slots=2 if args.suite == 'two-agent' else 4,
-                        context=131072 if args.suite == 'two-agent' else 8192, no_spec=off):
+                        context_pool=204800 if args.suite == 'two-agent' else 32768, no_spec=off):
                 if args.suite == 'two-agent':
                     x.warm(name, 2)
                     coding_pair(name)

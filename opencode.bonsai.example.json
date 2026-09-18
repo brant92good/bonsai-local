@@ -7,58 +7,58 @@
       },
       "models": {
         "bonsai2-27b": {
-          "name": "Bonsai 2 27B - Standard MTP (2x131K)",
+          "name": "Bonsai 2 27B - Standard MTP (shared 200K, 2 slots, draft 4)",
           "limit": {
-            "context": 131072,
+            "context": 204800,
             "output": 8192
           }
         },
         "bonsai2-27b-abliterated": {
-          "name": "Bonsai 2 27B - Abliterated MTP (2x131K)",
+          "name": "Bonsai 2 27B - Abliterated MTP (shared 200K, 2 slots, draft 2)",
           "limit": {
-            "context": 131072,
+            "context": 204800,
             "output": 8192
           }
         },
         "bonsai2-27b-200k": {
-          "name": "Bonsai 2 27B - Standard MTP (1x200K)",
+          "name": "Bonsai 2 27B - Standard MTP (dedicated 200K, draft 4)",
           "limit": {
             "context": 204800,
             "output": 8192
           }
         },
         "bonsai2-27b-abliterated-200k": {
-          "name": "Bonsai 2 27B - Abliterated MTP (1x200K)",
+          "name": "Bonsai 2 27B - Abliterated MTP (dedicated 200K, draft 2)",
           "limit": {
             "context": 204800,
             "output": 8192
           }
         },
-        "bonsai2-27b-4x32k": {
-          "name": "Bonsai 2 27B - Standard MTP (4x32K)",
+        "bonsai2-27b-agents-4": {
+          "name": "Bonsai 2 27B - Standard MTP (shared 200K, 4 slots)",
           "limit": {
-            "context": 32768,
+            "context": 204800,
             "output": 8192
           }
         },
-        "bonsai2-27b-8x16k": {
-          "name": "Bonsai 2 27B - Standard MTP (8x16K)",
+        "bonsai2-27b-abliterated-agents-4": {
+          "name": "Bonsai 2 27B - Abliterated MTP (shared 200K, 4 slots)",
           "limit": {
-            "context": 16384,
+            "context": 204800,
             "output": 8192
           }
         },
-        "bonsai2-27b-abliterated-4x32k": {
-          "name": "Bonsai 2 27B - Abliterated MTP (4x32K)",
+        "bonsai2-27b-agents-8": {
+          "name": "Bonsai 2 27B - Standard MTP (shared 200K, 8 slots)",
           "limit": {
-            "context": 32768,
+            "context": 204800,
             "output": 8192
           }
         },
-        "bonsai2-27b-abliterated-8x16k": {
-          "name": "Bonsai 2 27B - Abliterated MTP (8x16K)",
+        "bonsai2-27b-abliterated-agents-8": {
+          "name": "Bonsai 2 27B - Abliterated MTP (shared 200K, 8 slots)",
           "limit": {
-            "context": 16384,
+            "context": 204800,
             "output": 8192
           }
         }

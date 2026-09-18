@@ -13,7 +13,7 @@ param(
     [ValidateRange(128,8192)][int]$BatchSize = 512,
     [ValidateRange(64,2048)][int]$MicroBatchSize = 256,
     [Alias('Users')][ValidateRange(1,8)][int]$ParallelRequests = 2,
-    [ValidateRange(2048,262144)][int]$ContextPerUser = 131072,
+    [ValidateRange(2048,262144)][int]$TotalContext = 204800,
     [switch]$Vision,
     [ValidateSet('127.0.0.1','0.0.0.0')][string]$ListenAddress = '127.0.0.1',
     [ValidateRange(1024,65535)][int]$Port = 18080,
@@ -27,16 +27,16 @@ if ($Abliterated) {
 }
 if ($MicroBatchSize -gt $BatchSize) { throw 'MicroBatchSize must not exceed BatchSize.' }
 $profiles = @{
-    'baseline'      = @{Parallel=2; Context=65536;  Cache='f16'}
-    'balanced'      = @{Parallel=2; Context=131072; Cache='q8_0'}
-    'single-200k'    = @{Parallel=1; Context=204800; Cache='q8_0'}
-    'agents-4'       = @{Parallel=4; Context=32768;  Cache='q8_0'}
-    'agents-8'       = @{Parallel=8; Context=16384;  Cache='q8_0'}
-    'long-context'  = @{Parallel=1; Context=262144; Cache='q8_0'}
+    'baseline'      = @{Parallel=2; ContextPool=131072; Cache='f16'}
+    'balanced'      = @{Parallel=2; ContextPool=204800; Cache='q8_0'}
+    'single-200k'   = @{Parallel=1; ContextPool=204800; Cache='q8_0'}
+    'agents-4'      = @{Parallel=4; ContextPool=204800; Cache='q8_0'}
+    'agents-8'      = @{Parallel=8; ContextPool=204800; Cache='q8_0'}
+    'long-context'  = @{Parallel=1; ContextPool=262144; Cache='q8_0'}
 }
 $preset = $profiles[$Profile]
 if (-not $PSBoundParameters.ContainsKey('ParallelRequests')) { $ParallelRequests = $preset.Parallel }
-if (-not $PSBoundParameters.ContainsKey('ContextPerUser')) { $ContextPerUser = $preset.Context }
+if (-not $PSBoundParameters.ContainsKey('TotalContext')) { $TotalContext = $preset.ContextPool }
 if (-not $PSBoundParameters.ContainsKey('CacheTypeK')) { $CacheTypeK = $preset.Cache }
 if (-not $PSBoundParameters.ContainsKey('CacheTypeV')) { $CacheTypeV = $preset.Cache }
 $runtimePaths = @((Join-Path $root 'bin\llama-server.exe'), (Join-Path $root 'mtp\llama\build\bin\llama-server.exe'))
@@ -51,14 +51,14 @@ if ($Abliterated) {
     $modelAlias = 'bonsai2-27b-abliterated'
 }
 $projector = Join-Path $root 'models\Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf'
-$totalContext = [long]$ParallelRequests * $ContextPerUser
+$totalContext = [long]$TotalContext
 $serverArgs = @(
     '--model', $model,
     '--alias', $modelAlias,
     '--host', $ListenAddress, '--port', "$Port",
     '--n-gpu-layers', '99', '--flash-attn', 'on',
     '--ctx-size', "$totalContext", '--parallel', "$ParallelRequests",
-    '--cont-batching', '--cache-prompt', '--metrics', '--no-kv-unified', '--cache-type-k', $CacheTypeK, '--cache-type-v', $CacheTypeV,
+    '--cont-batching', '--cache-prompt', '--metrics', '--kv-unified', '--cache-type-k', $CacheTypeK, '--cache-type-v', $CacheTypeV,
     '--batch-size', "$BatchSize", '--ubatch-size', "$MicroBatchSize",
     '--temp', '1.0', '--top-p', '0.95', '--top-k', '20', '--min-p', '0',
     '--repeat-penalty', '1.0', '--presence-penalty', '0.0',
@@ -88,7 +88,7 @@ $weightsGiB = $weightsBytes / 1GB
 $cacheKiBPerSide = @{f16=32; q8_0=17; q4_0=9}
 $cacheGiB = $totalContext * ($cacheKiBPerSide[$CacheTypeK] + $cacheKiBPerSide[$CacheTypeV]) * 1KB / 1GB
 if ($Mtp) { Write-Host "MTP model; speculative mode: $specType; draft tokens: $DraftTokens" }
-Write-Host "Bonsai 2 ${Packing}: $ParallelRequests concurrent request(s), $ContextPerUser tokens per request."
+Write-Host "Bonsai 2 ${Packing}: $ParallelRequests concurrent slot(s) sharing a $totalContext-token KV pool."
 Write-Host "Profile: $Profile. K=$CacheTypeK V=$CacheTypeV cache: $cacheGiB GiB; weights: $([math]::Round($weightsGiB,2)) GiB; runtime overhead is additional."
 Write-Host "API: http://127.0.0.1:$Port/v1 ; model: $modelAlias"
 if (-not $EnableGpu) {

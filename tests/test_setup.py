@@ -12,6 +12,12 @@ spec.loader.exec_module(setup)
 
 
 class ArtifactTests(unittest.TestCase):
+    def test_server_uses_one_shared_kv_pool(self):
+        launcher = (ROOT / 'Start-Bonsai.ps1').read_text()
+        self.assertIn("'--kv-unified'", launcher)
+        self.assertNotIn("'--no-kv-unified'", launcher)
+        self.assertNotIn('ContextPerUser', launcher)
+
     def test_checked_in_patch_hashes(self):
         manifest = json.loads((ROOT / 'artifacts.json').read_text())
         for patch in manifest['runtime']['patches']:
