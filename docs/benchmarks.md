@@ -2,9 +2,35 @@
 
 2026-09-19 · Windows x64 · RTX 3090 24 GiB · i5-13600K · 31.7 GiB RAM
 
+## Draft-length sweep
+
+Two 131,072-token slots, PQ2 + MTP weights, Q8 K/V cache, 2048/512 batch settings, and three repeats per mode.
+
+| Draft length | Coding tok/s | Cached 6K tok/s | Acceptance | Coding passes | Loaded GPU memory |
+|---|---:|---:|---:|---:|---:|
+| Off | 81.6 | 86.0 | - | 3/3 | 20,885 MiB |
+| 1 | 93.8 | 85.9 | 93.2% | 3/3 | 22,841 MiB |
+| 2 | 106.4 | 91.3 | 89.5% | 3/3 | 23,139 MiB |
+| 3 | 109.6 | 89.1 | 81.2% | 3/3 | 23,439 MiB |
+| **4** | **124.2** | **101.2** | 74.8% | **3/3** | 23,530 MiB |
+
+Draft 4 improved the coding pair by 52% over MTP off and 17% over draft 2. Lower acceptance at longer drafts did not reduce throughput on these prompts.
+
+The modes ran in fixed order. Desktop activity, GPU clocks, and thermals were monitored but not isolated; peak temperatures were 75-78 C. Treat the ranking as a local screening result. Randomized multi-round testing on an idle system is required for publication-grade comparisons.
+
+Reproduce with:
+
+~~~powershell
+$env:BONSAI_ROOT = 'F:\bonsai2'
+$env:BONSAI_BENCH_OUTPUT = 'F:\bonsai2\benchmark-runs\draft-sweep'
+python .\benchmarks\draft-sweep.py
+~~~
+
+[Summary](../benchmarks/results/2026-09-19-draft-sweep/draft-sweep-summary.json) | [Raw synthetic results](../benchmarks/results/2026-09-19-draft-sweep/results.jsonl)
+
 ## MTP
 
-Both arms use identical PQ2 + Q8 MTP weights, the patched CUDA 13.3 runtime, Q8 K/V cache, and 2048/512 batch settings. MTP uses two draft tokens.
+Both arms use identical PQ2 + Q8 MTP weights, the patched CUDA 13.3 runtime, Q8 K/V cache, and 2048/512 batch settings. The earlier MTP comparison uses two draft tokens.
 
 | Workload | Slots | MTP off | MTP on |
 |---|---|---:|---:|

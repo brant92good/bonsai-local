@@ -7,11 +7,18 @@
       },
       "models": {
         "bonsai2-27b": {
+          "name": "Bonsai 2 27B - Standard MTP (draft 4)",
           "limit": {
-            "output": 8192,
-            "context": 131072
-          },
-          "name": "Bonsai 2 27B"
+            "context": 131072,
+            "output": 8192
+          }
+        },
+        "bonsai2-27b-abliterated": {
+          "name": "Bonsai 2 27B - Abliterated MTP (draft 2)",
+          "limit": {
+            "context": 131072,
+            "output": 8192
+          }
         }
       },
       "npm": "@ai-sdk/openai-compatible",

@@ -72,6 +72,15 @@
       "sha256": "0ecd7ffc7f26390ce7799e7bcd409e4f11c410144308a6a5b0fcdce63d871006",
       "default": true,
       "extract_to": "clients/opencode"
+    },
+    {
+      "name": "Ternary-Bonsai-2-27B-Abliterated-PQ2_0-MTP.gguf",
+      "url": "https://huggingface.co/BoldingBuilds/Ternary-Bonsai-2-27B-Abliterated-PQ2_0-MTP-GGUF/resolve/433727499888f5d120f31975d9ed241eed3102fc/Ternary-Bonsai-2-27B-Abliterated-PQ2_0-MTP.gguf",
+      "size": 7657489696,
+      "sha256": "7aa43b9a42f5bebc170d54f45657a7ccad841dd1f5b94434b107945740b02e86",
+      "dir": "models",
+      "default": false,
+      "flavor": "abliterated"
     }
   ]
 }

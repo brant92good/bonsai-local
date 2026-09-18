@@ -26,7 +26,7 @@ if ($listener) {
 
 
 @contextlib.contextmanager
-def server(name, slots=2, context=131072, no_spec=False):
+def server(name, slots=2, context=131072, no_spec=False, draft=4):
     with socket.socket() as connection:
         if connection.connect_ex(('127.0.0.1', 18081)) == 0:
             raise RuntimeError('Benchmark port 18081 is already in use.')
@@ -35,7 +35,7 @@ def server(name, slots=2, context=131072, no_spec=False):
             str(b.ROOT / 'Start-Bonsai.ps1'), '-EnableGpu', '-Mtp',
             '-ParallelRequests', str(slots), '-ContextPerUser', str(context),
             '-CacheTypeK', 'q8_0', '-CacheTypeV', 'q8_0', '-Port', '18081',
-            '-BatchSize', '2048', '-MicroBatchSize', '512', '-DraftTokens', '2']
+            '-BatchSize', '2048', '-MicroBatchSize', '512', '-DraftTokens', str(draft)]
     if no_spec:
         args.append('-DisableSpeculation')
     with (b.RUN / f'{name}.stdout.log').open('w') as out, (b.RUN / f'{name}.stderr.log').open('w') as err:
@@ -57,7 +57,7 @@ def server(name, slots=2, context=131072, no_spec=False):
                     'cache_k': 'q8_0', 'cache_v': 'q8_0', 'batch': 2048, 'ubatch': 512,
                     'slots': props['total_slots'],
                     'context_per_slot': props['default_generation_settings']['n_ctx'],
-                    'mtp_model': True, 'draft_tokens': 2,
+                    'mtp_model': True, 'draft_tokens': 0 if no_spec else draft,
                     'speculation': props['default_generation_settings']['params'].get('speculative.types'),
                     'gpu_before': before, 'gpu_loaded': b.gpu()})
             yield

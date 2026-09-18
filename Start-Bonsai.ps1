@@ -2,8 +2,9 @@
 param(
     [switch]$EnableGpu,
     [switch]$Mtp,
+    [switch]$Abliterated,
     [switch]$DisableSpeculation,
-    [ValidateRange(1,8)][int]$DraftTokens = 2,
+    [ValidateRange(1,8)][int]$DraftTokens = 4,
     [ValidateSet('PTQ1_0','PQ2_0')][string]$Packing = 'PQ2_0',
     [ValidateSet('baseline','balanced','long-context')][string]$Profile = 'balanced',
     [ValidateSet('f16','q8_0','q4_0')][string]$CacheTypeK = 'q8_0',
@@ -20,6 +21,10 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
+if ($Abliterated) {
+    $Mtp = $true
+    if (-not $PSBoundParameters.ContainsKey('DraftTokens')) { $DraftTokens = 2 }
+}
 if ($MicroBatchSize -gt $BatchSize) { throw 'MicroBatchSize must not exceed BatchSize.' }
 $profiles = @{
     'baseline'      = @{Parallel=2; Context=65536;  Cache='f16'}
@@ -35,13 +40,18 @@ $runtimePaths = @((Join-Path $root 'bin\llama-server.exe'), (Join-Path $root 'mt
 if ($Mtp) { $binary = @(Get-Item -LiteralPath $runtimePaths[1] -ErrorAction SilentlyContinue); $Packing = 'PQ2_0' } else { $binary = @(Get-Item -LiteralPath $runtimePaths[0] -ErrorAction SilentlyContinue) }
 if ($DisableSpeculation -and -not $Mtp) { throw 'DisableSpeculation is a benchmark control for the MTP model.' }
 if ($binary.Count -ne 1) { throw 'Expected exactly one installed llama-server.exe. Run Setup.ps1 first.' }
+$modelAlias = 'bonsai2-27b'
 $model = Join-Path $root ("models\Ternary-Bonsai-2-27B-$Packing.gguf")
 if ($Mtp) { $model = Join-Path $root 'models\Ternary-Bonsai-2-27B-PQ2_0-MTP-Q8_0.gguf' }
+if ($Abliterated) {
+    $model = Join-Path $root 'models\Ternary-Bonsai-2-27B-Abliterated-PQ2_0-MTP.gguf'
+    $modelAlias = 'bonsai2-27b-abliterated'
+}
 $projector = Join-Path $root 'models\Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf'
 $totalContext = [long]$ParallelRequests * $ContextPerUser
 $serverArgs = @(
     '--model', $model,
-    '--alias', 'bonsai2-27b',
+    '--alias', $modelAlias,
     '--host', $ListenAddress, '--port', "$Port",
     '--n-gpu-layers', '99', '--flash-attn', 'on',
     '--ctx-size', "$totalContext", '--parallel', "$ParallelRequests",
@@ -70,13 +80,14 @@ if ($ApiKeyFile) {
     $serverArgs += @('--api-key-file', (Resolve-Path -LiteralPath $ApiKeyFile).Path)
 }
 $weightSizes = @{PTQ1_0=5946648928; PQ2_0=7206168928}
-$weightsGiB = $(if ($Mtp) {7657489728} else {$weightSizes[$Packing]}) / 1GB
+$weightsBytes = if ($Abliterated) { 7657489696 } elseif ($Mtp) { 7657489728 } else { $weightSizes[$Packing] }
+$weightsGiB = $weightsBytes / 1GB
 $cacheKiBPerSide = @{f16=32; q8_0=17; q4_0=9}
 $cacheGiB = $totalContext * ($cacheKiBPerSide[$CacheTypeK] + $cacheKiBPerSide[$CacheTypeV]) * 1KB / 1GB
 if ($Mtp) { Write-Host "MTP model; speculative mode: $specType; draft tokens: $DraftTokens" }
 Write-Host "Bonsai 2 ${Packing}: $ParallelRequests concurrent request(s), $ContextPerUser tokens per request."
 Write-Host "Profile: $Profile. K=$CacheTypeK V=$CacheTypeV cache: $cacheGiB GiB; weights: $([math]::Round($weightsGiB,2)) GiB; runtime overhead is additional."
-Write-Host "API: http://127.0.0.1:$Port/v1 ; model: bonsai2-27b"
+Write-Host "API: http://127.0.0.1:$Port/v1 ; model: $modelAlias"
 if (-not $EnableGpu) {
     Write-Host 'PREVIEW ONLY. No model process started. Add -EnableGpu when you are done gaming.' -ForegroundColor Green
     [pscustomobject]@{Executable=$binary[0].FullName; Arguments=$serverArgs; GpuStarted=$false} | ConvertTo-Json -Depth 3

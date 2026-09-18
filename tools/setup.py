@@ -52,7 +52,8 @@ def copy_sources(root):
     names = ['Setup.ps1', 'Start-Bonsai.ps1', 'Stop-Bonsai.ps1',
              'Start-GPU-after-gaming.cmd', 'Preview-settings-no-GPU.cmd',
              'Stop-Bonsai.cmd', 'OpenCode-Bonsai.ps1', 'OpenCode-Bonsai.cmd',
-             'opencode.bonsai.example.json', 'artifacts.json', 'README.md',
+             'Install-OpenCode-Global.ps1', 'opencode.bonsai.example.json',
+             'artifacts.json', 'README.md',
              'THIRD_PARTY.md']
     for name in names:
         shutil.copy2(SOURCE / name, root / name)
@@ -123,6 +124,7 @@ def main():
     parser.add_argument('--install-dir', type=Path, default=SOURCE)
     parser.add_argument('--skip-build', action='store_true')
     parser.add_argument('--all-models', action='store_true')
+    parser.add_argument('--abliterated', action='store_true')
     parser.add_argument('--cuda-architecture', type=int, default=86)
     args = parser.parse_args()
     if sys.version_info < (3, 11):
@@ -138,7 +140,9 @@ def main():
     records = json.loads(verification.read_text(encoding='utf-8-sig')) if verification.exists() else []
     by_path = {str(Path(r['file']).resolve()): r for r in records}
     for item in manifest['files']:
-        if not item.get('default', False) and not args.all_models:
+        selected = (item.get('default', False) or args.all_models or
+                    (args.abliterated and item.get('flavor') == 'abliterated'))
+        if not selected:
             continue
         record = download(item, root)
         by_path[record['file']] = record
