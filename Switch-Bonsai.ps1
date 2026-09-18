@@ -59,8 +59,9 @@ if (-not $reused) {
         '-BatchSize', "$($target.Batch)", '-MicroBatchSize', "$($target.MicroBatch)"
     )
     if ($Variant -eq 'abliterated') { $launchArgs += '-Abliterated' } else { $launchArgs += '-Mtp' }
-    $stdout = Join-Path $logDir "$Variant-$ServingProfile.stdout.log"
-    $stderr = Join-Path $logDir "$Variant-$ServingProfile.stderr.log"
+    $runStamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
+    $stdout = Join-Path $logDir "$Variant-$ServingProfile-$runStamp.stdout.log"
+    $stderr = Join-Path $logDir "$Variant-$ServingProfile-$runStamp.stderr.log"
     $startParams = @{
         FilePath = 'powershell.exe'
         ArgumentList = $launchArgs
